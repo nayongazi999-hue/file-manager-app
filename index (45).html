@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ফাইল ডাউনলোড</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#F7F6F3;--surface:#FFFFFF;--surface2:#F0EEE9;--border:#E2DFD8;
+  --text:#1A1917;--text2:#6B6860;--text3:#9B9890;
+  --accent:#2563EB;--accent2:#1D4ED8;--accent-light:#EFF6FF;
+  --radius:10px;--radius-lg:16px;
+}
+body{font-family:'Hind Siliguri','Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;}
+
+/* TOPBAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-icon{width:34px;height:34px;border-radius:9px;background:var(--accent);display:flex;align-items:center;justify-content:center;}
+.brand-icon svg{width:18px;height:18px;color:white;}
+.brand-name{font-size:17px;font-weight:600;}
+.visitor-badge{font-size:12px;color:var(--text3);background:var(--surface2);border-radius:8px;padding:5px 12px;}
+
+/* HERO */
+.hero{background:var(--accent);color:white;padding:2.5rem 1.5rem;text-align:center;}
+.hero h1{font-size:26px;font-weight:600;margin-bottom:8px;letter-spacing:-0.3px;}
+.hero p{font-size:15px;opacity:0.85;margin-bottom:1.5rem;}
+.hero-search{max-width:480px;margin:0 auto;position:relative;}
+.hero-search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:rgba(255,255,255,0.6);}
+.hero-search input{width:100%;padding:13px 16px 13px 44px;border:none;border-radius:var(--radius-lg);font-size:15px;font-family:inherit;background:rgba(255,255,255,0.15);color:white;outline:none;backdrop-filter:blur(4px);}
+.hero-search input::placeholder{color:rgba(255,255,255,0.6);}
+.hero-search input:focus{background:rgba(255,255,255,0.25);}
+.hero-stats{display:flex;justify-content:center;gap:2rem;margin-top:1.5rem;}
+.h-stat{text-align:center;}
+.h-stat-val{font-size:22px;font-weight:600;}
+.h-stat-lbl{font-size:12px;opacity:0.75;margin-top:2px;}
+
+/* MAIN */
+.main{max-width:960px;margin:0 auto;padding:2rem 1.5rem;}
+
+/* FILTER ROW */
+.filter-row{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center;}
+.filter-chip{padding:7px 14px;border:1px solid var(--border);border-radius:20px;font-size:13px;cursor:pointer;background:var(--surface);color:var(--text2);transition:all 0.15s;font-family:inherit;}
+.filter-chip:hover{border-color:var(--accent);color:var(--accent);}
+.filter-chip.active{background:var(--accent);color:white;border-color:var(--accent);}
+.sort-sel{margin-left:auto;padding:7px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:inherit;background:var(--surface);color:var(--text2);cursor:pointer;outline:none;}
+
+/* SECTION */
+.section-label{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:10px;}
+
+/* GRID */
+.files-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin-bottom:2rem;}
+.file-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;transition:all 0.18s;position:relative;overflow:hidden;}
+.file-card::after{content:'';position:absolute;inset:0;border-radius:var(--radius-lg);border:2px solid transparent;transition:border-color 0.18s;pointer-events:none;}
+.file-card:hover{transform:translateY(-2px);}
+.file-card:hover::after{border-color:var(--accent);}
+.file-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px;}
+.file-name{font-size:14px;font-weight:600;margin-bottom:4px;line-height:1.4;}
+.file-desc{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;min-height:18px;}
+.file-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.tag{font-size:11px;font-weight:500;padding:2px 8px;border-radius:5px;}
+.file-date{font-size:11px;color:var(--text3);margin-bottom:12px;}
+.file-btns{display:flex;gap:7px;}
+.btn-view{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-size:12px;font-weight:500;color:var(--text2);text-decoration:none;transition:all 0.15s;}
+.btn-view:hover{background:var(--accent-light);color:var(--accent);border-color:#BFDBFE;}
+.btn-view svg{width:13px;height:13px;}
+.btn-dl{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px;border-radius:8px;background:var(--accent);color:white;font-size:12px;font-weight:500;text-decoration:none;transition:background 0.15s;border:1px solid var(--accent);}
+.btn-dl:hover{background:var(--accent2);}
+.btn-dl svg{width:13px;height:13px;}
+
+/* NEW badge */
+.new-dot{position:absolute;top:12px;right:12px;width:8px;height:8px;background:#16A34A;border-radius:50%;}
+
+/* EMPTY */
+.empty{text-align:center;padding:4rem 1rem;color:var(--text2);}
+.empty-icon{width:72px;height:72px;background:var(--surface2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:30px;}
+.empty h3{font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px;}
+
+/* CAT SECTION */
+.cat-section{margin-bottom:2rem;}
+.cat-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.cat-name{font-size:15px;font-weight:600;}
+.cat-count{font-size:12px;color:var(--text3);}
+
+/* FOOTER */
+footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--text3);border-top:1px solid var(--border);}
+footer a{color:var(--text3);text-decoration:none;}
+
+@media(max-width:640px){
+  .main{padding:1rem;}
+  .hero{padding:2rem 1rem;}
+  .hero h1{font-size:20px;}
+  .files-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+  .topbar{padding:0 1rem;}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    </div>
+    <span class="brand-name">ফাইল ডাউনলোড</span>
+  </div>
+  <div class="visitor-badge" id="visitorBadge">👁️ দেখছেন</div>
+</header>
+
+<div class="hero">
+  <h1>📁 সব ফাইল এক জায়গায়</h1>
+  <p>যেকোনো ফাইল বিনামূল্যে দেখুন ও ডাউনলোড করুন</p>
+  <div class="hero-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="searchInput" placeholder="ফাইল খুঁজুন..." oninput="render()" />
+  </div>
+  <div class="hero-stats">
+    <div class="h-stat"><div class="h-stat-val" id="hTotal">0</div><div class="h-stat-lbl">ফাইল</div></div>
+    <div class="h-stat"><div class="h-stat-val" id="hCats">0</div><div class="h-stat-lbl">ক্যাটাগরি</div></div>
+    <div class="h-stat"><div class="h-stat-val" id="hNew">0</div><div class="h-stat-lbl">নতুন</div></div>
+  </div>
+</div>
+
+<main class="main">
+  <div class="filter-row" id="filterRow">
+    <button class="filter-chip active" onclick="setFilter('')" data-f="">সব</button>
+    <select class="sort-sel" id="sortSel" onchange="render()">
+      <option value="new">নতুন আগে</option>
+      <option value="old">পুরনো আগে</option>
+      <option value="name">নাম অনুযায়ী</option>
+    </select>
+  </div>
+  <div id="mainContent"></div>
+</main>
+
+<footer>
+  সব ফাইল বিনামূল্যে ডাউনলোড করুন ·
+  <a href="admin.html">অ্যাডমিন</a>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCc4-5Ssr6eHRgHehVuzuJqB0YR3zptrII",
+  authDomain: "file-manager-app-f41b1.firebaseapp.com",
+  projectId: "file-manager-app-f41b1",
+  storageBucket: "file-manager-app-f41b1.firebasestorage.app",
+  messagingSenderId: "335738456401",
+  appId: "1:335738456401:web:a99f7249033cd9bb80eb70",
+  measurementId: "G-YJVWGE55C4"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const TYPE={
+  pdf: {emoji:'📄',bg:'#FEF2F2',color:'#DC2626',label:'PDF'},
+  doc: {emoji:'📝',bg:'#EFF6FF',color:'#2563EB',label:'Word'},
+  xls: {emoji:'📊',bg:'#F0FDF4',color:'#16A34A',label:'Excel'},
+  ppt: {emoji:'📋',bg:'#FFFBEB',color:'#D97706',label:'PPT'},
+  img: {emoji:'🖼️',bg:'#F5F3FF',color:'#7C3AED',label:'ছবি'},
+  video:{emoji:'🎬',bg:'#FFF7ED',color:'#EA580C',label:'ভিডিও'},
+  audio:{emoji:'🎵',bg:'#FDF4FF',color:'#9333EA',label:'অডিও'},
+  zip: {emoji:'📦',bg:'#F1F5F9',color:'#475569',label:'ZIP'},
+  other:{emoji:'📁',bg:'#F8FAFC',color:'#64748B',label:'ফাইল'},
+};
+
+let files = [];
+let activeFilter = '';
+
+async function loadFiles(){
+  try{
+    const q = query(collection(db,'files'), orderBy('ts','desc'));
+    const snap = await getDocs(q);
+    files = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+  }catch(e){
+    console.error('Firestore লোড এরর:', e);
+    files = [];
+  }
+  updateHeroStats();
+  buildFilterChips();
+  render();
+  logVisitor();
+}
+
+function updateHeroStats(){
+  document.getElementById('hTotal').textContent = files.length;
+  const cats = new Set(files.map(f=>f.cat).filter(Boolean));
+  document.getElementById('hCats').textContent = cats.size;
+  const weekAgo = Date.now()-7*24*60*60*1000;
+  document.getElementById('hNew').textContent = files.filter(f=>f.ts>weekAgo).length;
+}
+
+function buildFilterChips(){
+  const cats = [...new Set(files.map(f=>f.cat).filter(Boolean))];
+  const row = document.getElementById('filterRow');
+  const sort = row.querySelector('.sort-sel');
+  row.innerHTML = '';
+  const all = document.createElement('button');
+  all.className = 'filter-chip' + (activeFilter===''?' active':'');
+  all.textContent = 'সব';
+  all.onclick = ()=>setFilter('');
+  row.appendChild(all);
+  cats.forEach(c=>{
+    const btn = document.createElement('button');
+    btn.className = 'filter-chip' + (activeFilter===c?' active':'');
+    btn.textContent = c;
+    btn.onclick = ()=>setFilter(c);
+    row.appendChild(btn);
+  });
+  row.appendChild(sort);
+}
+
+function setFilter(f){
+  activeFilter=f;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  event.target.classList.add('active');
+  render();
+}
+
+function render(){
+  const q   = document.getElementById('searchInput').value.toLowerCase();
+  const sort = document.getElementById('sortSel').value;
+  let list = files.filter(f=>{
+    const mQ = !q||f.name.toLowerCase().includes(q)||(f.desc||'').toLowerCase().includes(q)||(f.cat||'').toLowerCase().includes(q);
+    const mC = !activeFilter||f.cat===activeFilter;
+    return mQ&&mC;
+  });
+  if(sort==='name') list.sort((a,b)=>a.name.localeCompare(b.name,'bn'));
+  else if(sort==='old') list.sort((a,b)=>(a.ts||0)-(b.ts||0));
+
+  const container = document.getElementById('mainContent');
+  if(!list.length){
+    container.innerHTML=`<div class="empty"><div class="empty-icon">📭</div><h3>${files.length?'কোনো ফাইল পাওয়া যায়নি':'এখনো কোনো ফাইল নেই'}</h3><p>${files.length?'অন্য কিওয়ার্ড দিয়ে খুঁজুন':'শীঘ্রই ফাইল যোগ করা হবে'}</p></div>`;
+    return;
+  }
+
+  const weekAgo = Date.now()-7*24*60*60*1000;
+  if(!activeFilter && !q){
+    // গ্রুপ by category
+    const cats = [...new Set(list.map(f=>f.cat||'সাধারণ'))];
+    container.innerHTML = cats.map(cat=>{
+      const catFiles = list.filter(f=>(f.cat||'সাধারণ')===cat);
+      return `<div class="cat-section">
+        <div class="cat-header">
+          <span class="cat-name">📂 ${esc(cat)}</span>
+          <span class="cat-count">${catFiles.length}টি ফাইল</span>
+        </div>
+        <div class="files-grid">${catFiles.map(f=>fileCard(f,weekAgo)).join('')}</div>
+      </div>`;
+    }).join('');
+  } else {
+    container.innerHTML = `<div class="section-label">${list.length}টি ফাইল পাওয়া গেছে</div><div class="files-grid">${list.map(f=>fileCard(f,weekAgo)).join('')}</div>`;
+  }
+}
+
+function fileCard(f, weekAgo){
+  const t=TYPE[f.type]||TYPE.other;
+  const isNew = (f.ts||0)>weekAgo;
+  return `<div class="file-card">
+    ${isNew?'<div class="new-dot" title="নতুন"></div>':''}
+    <div class="file-icon" style="background:${t.bg};">${t.emoji}</div>
+    <div class="file-name">${esc(f.name)}</div>
+    <div class="file-desc">${f.desc?esc(f.desc).substring(0,60):''}</div>
+    <div class="file-tags">
+      <span class="tag" style="background:${t.bg};color:${t.color};">${t.label}</span>
+      ${f.cat?`<span class="tag" style="background:var(--surface2);color:var(--text2);">${esc(f.cat)}</span>`:''}
+    </div>
+    <div class="file-date">${f.date||''}</div>
+    <div class="file-btns">
+      <a href="${esc(f.url)}" target="_blank" class="btn-view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        দেখুন
+      </a>
+      <a href="${esc(f.url)}" download class="btn-dl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        ডাউনলোড
+      </a>
+    </div>
+  </div>`;
+}
+
+async function logVisitor(){
+  const now = new Date();
+  const visitorData = {
+    name: 'ভিজিটর',
+    time: now.toLocaleString('bn-BD'),
+    page: 'হোমপেজ',
+    online: true,
+    ts: Date.now(),
+  };
+  try{
+    await addDoc(collection(db,'visitors'), visitorData);
+    const snap = await getDocs(collection(db,'visitors'));
+    document.getElementById('visitorBadge').textContent = `👁️ ${snap.size} ভিজিট`;
+  }catch(e){
+    console.error('ভিজিটর লগ এরর:', e);
+  }
+}
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+window.setFilter = setFilter;
+window.render = render;
+loadFiles();
+
+// রিফ্রেশ করলে নতুন ফাইল দেখা যাবে
+window.addEventListener('focus', async ()=>{
+  try{
+    const q = query(collection(db,'files'), orderBy('ts','desc'));
+    const snap = await getDocs(q);
+    const newFiles = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+    if(newFiles.length!==files.length){ files=newFiles; updateHeroStats(); buildFilterChips(); render(); }
+  }catch(e){
+    console.error('রিফ্রেশ এরর:', e);
+  }
+});
+</script>
+</body>
+</html>
